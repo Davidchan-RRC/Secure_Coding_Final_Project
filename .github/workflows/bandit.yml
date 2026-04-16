@@ -15,18 +15,5 @@ jobs:
       # required for all workflows
       security-events: write
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-      - name: Install Bandit
-        run: pip install bandit
-      - name: Run Bandit
-        run: bandit -r . -f txt -o bandit_report.txt
-      - name: Upload Report
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: bandit-report
-          path: bandit_report.txt
+      - name: Perform Bandit Analysis
+        uses: PyCQA/bandit-action@v1
