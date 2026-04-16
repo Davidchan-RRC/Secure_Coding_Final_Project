@@ -3,7 +3,8 @@ name: Bandit
 on:
   workflow_dispatch:
   push: null
-  pull_request: null
+  pull_request: 
+    branches: [main]
 
 permissions: {}
 
@@ -13,9 +14,19 @@ jobs:
     permissions:
       # required for all workflows
       security-events: write
-      # only required for workflows in private repositories
-      actions: read
-      contents: read
     steps:
-      - name: Perform Bandit Analysis
-        uses: PyCQA/bandit-action@v1
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install Bandit
+        run: pip install bandit
+      - name: Run Bandit
+        run: bandit -r . -f txt -o bandit_report.txt
+      - name: Upload Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: bandit-report
+          path: bandit_report.txt
